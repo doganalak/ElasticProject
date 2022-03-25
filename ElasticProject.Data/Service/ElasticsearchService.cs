@@ -56,16 +56,16 @@ namespace ElasticProject.Data
         public async Task<List<Cities>> GetDocuments(string indexName)
         {
             #region Wildcard aradaki harfi kendi tamamlıyor            
-            var response = await _client.SearchAsync<Cities>(s => s
-                    .From(0)
-                    .Take(10)
-                    .Index(indexName)
-                    .Query(q => q
-                    .Bool(b => b
-                    .Should(m => m
-                    .Wildcard(w => w
-                    .Field("city")
-                    .Value("r*ze"))))));
+            //var response = await _client.SearchAsync<Cities>(s => s
+            //        .From(0)
+            //        .Take(10)
+            //        .Index(indexName)
+            //        .Query(q => q
+            //        .Bool(b => b
+            //        .Should(m => m
+            //        .Wildcard(w => w
+            //        .Field("city")
+            //        .Value("r*ze"))))));
             #endregion
 
             #region Fuzzy kelime kendi tamamlar parametrikde olabilir
@@ -93,14 +93,14 @@ namespace ElasticProject.Data
             #endregion
 
             #region MultiMatch çoklu  büyük küçük duyarlığı olmaz
-            //MultiMatch
+            // MultiMatch
             //    var response = await _client.SearchAsync<Cities>(s => s
             //                   .Index(indexName)
             //                   .Query(q => q
             //.MultiMatch(mm => mm
             //    .Fields(f => f
-            //        .Field(ff => ff.Name)
-            //        .Field(ff => ff.ImageUrl)
+            //        .Field(ff => ff.City)
+            //        .Field(ff => ff.Region)
             //    )
             //    .Type(TextQueryType.PhrasePrefix)
             //    .Query("iz")
@@ -126,17 +126,17 @@ namespace ElasticProject.Data
             #endregion
 
             #region AnalyzeWildcard like sorgusu mantıgında çalışmakta
-            //var response = await _client.SearchAsync<Cities>(s => s
-            //                      .Index(indexName)
-            //                            .Query(q => q
-            //                    .QueryString(qs => qs
-            //                    .AnalyzeWildcard()
-            //                       .Query("*" + "iz" + "*")
-            //                       .Fields(fs => fs
-            //                           .Fields(f1 => f1.Name
-            //                                   )
+            var response = await _client.SearchAsync<Cities>(s => s
+                                  .Index(indexName)
+                                        .Query(q => q
+                                .QueryString(qs => qs
+                                .AnalyzeWildcard()
+                                   .Query("*" + "iz" + "*")
+                                   .Fields(fs => fs
+                                       .Fields(f1 => f1.City
+                                               )
 
-            //                    ))));
+                                ))));
             #endregion         
 
             return response.Documents.ToList();
